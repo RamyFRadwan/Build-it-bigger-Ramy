@@ -1,0 +1,63 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
+
+
+    defaultConfig {
+        applicationId "com.udacity.gradle.builditbigger"
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+//        multiDexEnabled true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath false
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+        }
+    }
+
+    flavorDimensions 'tier'//here defined dimensions
+
+    productFlavors {
+        free {
+            dimension 'tier'
+            applicationId "com.udacity.gradle.builditbigger.free"
+        }
+        paid {
+            dimension 'tier'
+            applicationId "com.udacity.gradle.builditbigger.paid"
+        }
+    }
+    sourceSets { paid { java.srcDirs = ['src/paid/java', 'src/paid/java/'] } }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile project(":jokesource")
+//    compile 'com.android.support:multidex:1.0.3'
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    // Added for AdMob
+    compile project(path: ':backend', configuration: 'android-endpoints')
+    freeCompile 'com.google.android.gms:play-services-ads:17.1.1'
+    compile 'com.android.support:design:28.0.0'
+    androidTestImplementation 'junit:junit:4.12'
+    compile project(path: ':jokelibrary')
+}
+
